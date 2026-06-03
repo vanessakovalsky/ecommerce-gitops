@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: myregistry/ecommerce-frontend:latest
+        image: nginx:latest
         ports:
         - containerPort: 80
         env:
