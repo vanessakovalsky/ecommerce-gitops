@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ecommerce-prod
+  namespace: argocd
+  annotations:
+    notifications.argoproj.io/subscribe.on-sync-succeeded.slack: prod-deployments
+    notifications.argoproj.io/subscribe.on-health-degraded.slack: prod-alerts
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: ecommerce
+  source:
+    repoURL: https://github.com/vanessakovalsky/ecommerce-gitops
+    targetRevision: v1.2.0  # Tag Git pour production
+    path: overlays/production
+  destination:
+    server: https://prod-cluster.example.com
+    namespace: ecommerce-prod
+  syncPolicy:
+    # Sync manuel en production
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+  # Ignore differences pour HPA
+  ignoreDifferences:
+  - group: apps
+    kind: Deployment
+    jsonPointers:
+    - /spec/replicas

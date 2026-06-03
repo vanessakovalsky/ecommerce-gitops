@@ -1,0 +1,57 @@
+# argocd-apps/project.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: ecommerce
+  namespace: argocd
+spec:
+  description: E-commerce application platform
+  
+  sourceRepos:
+  - https://github.com/myorg/ecommerce-gitops
+  - https://charts.bitnami.com/bitnami
+  
+  destinations:
+  - namespace: 'ecommerce-*'
+    server: '*'
+  
+  clusterResourceWhitelist:
+  - group: ''
+    kind: Namespace
+  
+  namespaceResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  
+  # Deny dangerous resources
+  namespaceResourceBlacklist:
+  - group: ''
+    kind: ResourceQuota
+  
+  roles:
+  - name: developer
+    description: Developers - read only
+    policies:
+    - p, proj:ecommerce:developer, applications, get, ecommerce/*, allow
+    - p, proj:ecommerce:developer, logs, get, ecommerce/*, allow
+    groups:
+    - ecommerce-dev-team
+  
+  - name: operator
+    description: Operators - can sync
+    policies:
+    - p, proj:ecommerce:operator, applications, *, ecommerce/ecommerce-dev, allow
+    - p, proj:ecommerce:operator, applications, *, ecommerce/ecommerce-staging, allow
+    - p, proj:ecommerce:operator, applications, get, ecommerce/ecommerce-prod, allow
+    - p, proj:ecommerce:operator, applications, sync, ecommerce/ecommerce-prod, allow
+    groups:
+    - ecommerce-ops-team
+  
+  syncWindows:
+  # Production: sync autorisé uniquement la nuit
+  - kind: deny
+    schedule: '0 6-22 * * *'
+    duration: 16h
+    applications:
+    - ecommerce-prod
+    manualSync: true
