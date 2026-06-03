@@ -5,8 +5,8 @@ metadata:
   namespace: ecommerce
 spec:
   ports:
-  - port: 3000
-    targetPort: 3000
+  - port: 80
+    targetPort: 80
   selector:
     app: backend
 ---
@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: myregistry/ecommerce-backend:latest
+        image: nginx:latest
         ports:
         - containerPort: 3000
         env:
@@ -49,8 +49,8 @@ spec:
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: /ready
-            port: 3000
+            path: /
+            port: 80
           initialDelaySeconds: 5
           periodSeconds: 5
         resources:
