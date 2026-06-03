@@ -8,7 +8,7 @@ spec:
   description: E-commerce application platform
   
   sourceRepos:
-  - https://github.com/myorg/ecommerce-gitops
+  - https://github.com/vanessakovalsky/ecommerce-gitops
   - https://charts.bitnami.com/bitnami
   
   destinations:
