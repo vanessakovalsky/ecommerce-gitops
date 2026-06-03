@@ -43,8 +43,8 @@ spec:
               key: password
         livenessProbe:
           httpGet:
-            path: /health
-            port: 3000
+            path: /
+            port: 80
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:

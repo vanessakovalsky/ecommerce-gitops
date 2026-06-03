@@ -15,7 +15,7 @@ spec:
     targetRevision: v1.2.0  # Tag Git pour production
     path: overlays/production
   destination:
-    server: https://prod-cluster.example.com
+    server: https://kubernetes.default.svc
     namespace: ecommerce-prod
   syncPolicy:
     # Sync manuel en production
